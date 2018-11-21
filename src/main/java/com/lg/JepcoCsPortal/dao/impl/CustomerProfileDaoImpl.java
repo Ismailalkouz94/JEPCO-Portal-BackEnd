@@ -13,19 +13,23 @@ public class CustomerProfileDaoImpl implements CustomerProfileDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-    
+
     @Override
     public List<CustomerProfile> findAll() {
-        return null;
+
+        return sessionFactory.getCurrentSession().createQuery("from CustomerProfile").list();
     }
 
     @Override
     public CustomerProfile find(Long customerId) {
-        return null;
+        return (CustomerProfile) sessionFactory.getCurrentSession().createQuery("from CustomerProfile CP" +
+                " where CP.customerId = :customerId")
+                .setParameter("customerId",customerId)
+                .uniqueResult();
     }
 
     @Override
     public CustomerProfile save(CustomerProfile customerProfile) {
-        return null;
+        return (CustomerProfile) sessionFactory.getCurrentSession().save(customerProfile);
     }
 }

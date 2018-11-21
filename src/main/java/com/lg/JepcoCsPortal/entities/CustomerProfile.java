@@ -13,7 +13,7 @@ public class CustomerProfile implements Serializable {
     @Id
 //    @Column(name = "CUST_MOB_NO" ,nullable = false ,unique = true ,length = 14)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long custId;
+    private Long customerId;
 
     private String firstName;
 
@@ -32,12 +32,12 @@ public class CustomerProfile implements Serializable {
 
     private String password;
 
-    public Long getCustId() {
-        return custId;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustId(Long custId) {
-        this.custId = custId;
+    public void setCustId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getFirstName() {
