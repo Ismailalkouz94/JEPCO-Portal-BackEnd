@@ -2,11 +2,13 @@ package com.lg.JepcoCsPortal.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+//@NamedQuery(name = "CustomerProfile.findByEmail", query = "from CustomerProfile cp where cp.email = ?1")
 @Table(name = "WEB_CUST_PROFILE")
 public class CustomerProfile implements Serializable {
 

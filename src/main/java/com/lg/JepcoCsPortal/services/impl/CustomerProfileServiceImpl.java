@@ -2,6 +2,7 @@ package com.lg.JepcoCsPortal.services.impl;
 
 import com.lg.JepcoCsPortal.dao.CustomerProfileDao;
 import com.lg.JepcoCsPortal.entities.CustomerProfile;
+import com.lg.JepcoCsPortal.helpers.Login;
 import com.lg.JepcoCsPortal.services.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,20 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     }
 
     @Override
-    public Optional<CustomerProfile> find(Long customerId) {
+    public Optional<CustomerProfile> findById(Long customerId) {
         return customerProfileDao.findById(customerId);
     }
 
     @Override
     public CustomerProfile save(CustomerProfile customerProfile) {
         return customerProfileDao.save(customerProfile);
+    }
+
+    @Override
+    public CustomerProfile login(Login login) {
+
+        //CustomerProfile customerProfile = customerProfileDao.
+
+        return null;
     }
 }

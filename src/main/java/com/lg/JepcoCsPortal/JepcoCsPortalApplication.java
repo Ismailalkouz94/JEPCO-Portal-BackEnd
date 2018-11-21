@@ -23,26 +23,4 @@ public class JepcoCsPortalApplication {
 		SpringApplication.run(JepcoCsPortalApplication.class, args);
 	}
 
-//	@Bean
-//	public HibernateJpaSessionFactoryBean sessionFactory(){
-//            return new HibernateJpaSessionFactoryBean();
-//	}
-
-//    @Bean
-//    JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-//        JpaTransactionManager transactionManager = new JpaTransactionManager();
-//        transactionManager.setEntityManagerFactory(entityManagerFactory);
-//        return transactionManager;
-//    }
-
-//    @Bean
-//    public HibernateJpaSessionFactoryBean sessionFactory(EntityManagerFactory emf) {
-//        HibernateJpaSessionFactoryBean fact = new HibernateJpaSessionFactoryBean();
-//        fact.setEntityManagerFactory(emf);
-//        return fact;
-//    }
-
-
-
-
 }
