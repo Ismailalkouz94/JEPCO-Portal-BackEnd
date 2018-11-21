@@ -30,16 +30,16 @@ public class CustomerProfileController {
         return new ResponseEntity<>(messageBody, HttpStatus.OK);
     }
 
-    @GetMapping("/customerProfile/find/{customerId}")
-    public ResponseEntity<MessageBody> findCustomerById(@PathParam("customerId") Long customerId)
-    {
-        MessageBody messageBody = MessageBody.getInstance();
-        messageBody.setBody(customerProfileService.find(customerId));
-        messageBody.setKey("success");
-        messageBody.setStatus("200");
-
-        return new ResponseEntity<>(messageBody, HttpStatus.OK);
-    }
+//    @GetMapping("/customerProfile/find/{customerId}")
+//    public ResponseEntity<MessageBody> findCustomerById(@PathParam("customerId") Long customerId)
+//    {
+//        MessageBody messageBody = MessageBody.getInstance();
+//        messageBody.setBody(customerProfileService.find(customerId));
+//        messageBody.setKey("success");
+//        messageBody.setStatus("200");
+//
+//        return new ResponseEntity<>(messageBody, HttpStatus.OK);
+//    }
 
     @PostMapping("/customerProfile/register")
     public ResponseEntity<MessageBody> registerCustomer(@RequestBody CustomerProfile customerProfile) {
