@@ -6,30 +6,22 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-public class CustomerProfileDaoImpl implements CustomerProfileDao {
+public class CustomerProfileDaoImpl  {
 
-    @Autowired
-    private SessionFactory sessionFactory;
 
-    @Override
-    public List<CustomerProfile> findAll() {
-
-        return sessionFactory.getCurrentSession().createQuery("from CustomerProfile").list();
-    }
-
-    @Override
-    public CustomerProfile find(Long customerId) {
-        return (CustomerProfile) sessionFactory.getCurrentSession().createQuery("from CustomerProfile CP" +
-                " where CP.customerId = :customerId")
-                .setParameter("customerId",customerId)
-                .uniqueResult();
-    }
-
-    @Override
-    public CustomerProfile save(CustomerProfile customerProfile) {
-        return (CustomerProfile) sessionFactory.getCurrentSession().save(customerProfile);
-    }
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//
+//    @Override
+//    public List<CustomerProfile> findAll() {
+//
+//        return entityManager.createQuery("SELECT c FROM CustomerProfile c ").getResultList();
+//    }
+//
 }

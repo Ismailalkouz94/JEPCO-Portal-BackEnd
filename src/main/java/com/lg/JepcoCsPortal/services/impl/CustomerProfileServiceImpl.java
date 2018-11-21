@@ -5,9 +5,9 @@ import com.lg.JepcoCsPortal.entities.CustomerProfile;
 import com.lg.JepcoCsPortal.services.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,12 +18,12 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
 
     @Override
     public List<CustomerProfile> findAll() {
-        return customerProfileDao.findAll();
+        return (List<CustomerProfile>) customerProfileDao.findAll();
     }
 
     @Override
-    public CustomerProfile find(Long customerId) {
-        return customerProfileDao.find(customerId);
+    public Optional<CustomerProfile> find(Long customerId) {
+        return customerProfileDao.findById(customerId);
     }
 
     @Override
