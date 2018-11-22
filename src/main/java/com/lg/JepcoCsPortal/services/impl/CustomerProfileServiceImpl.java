@@ -35,8 +35,6 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     @Override
     public CustomerProfile login(Login login) {
 
-        //CustomerProfile customerProfile = customerProfileDao.
-
-        return null;
+        return customerProfileDao.findByEmailAndPassword(login.getEmail(), login.getPassword());
     }
 }

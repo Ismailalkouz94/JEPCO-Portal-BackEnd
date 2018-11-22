@@ -30,16 +30,16 @@ public class CustomerProfileController {
         return new ResponseEntity<>(messageBody, HttpStatus.OK);
     }
 
-//    @GetMapping("/customerProfile/find/{customerId}")
-//    public ResponseEntity<MessageBody> findCustomerById(@PathParam("customerId") Long customerId)
-//    {
-//        MessageBody messageBody = MessageBody.getInstance();
-//        messageBody.setBody(customerProfileService.find(customerId));
-//        messageBody.setKey("success");
-//        messageBody.setStatus("200");
-//
-//        return new ResponseEntity<>(messageBody, HttpStatus.OK);
-//    }
+    @GetMapping("/customerProfile/find/{customerId}")
+    public ResponseEntity<MessageBody> findCustomerById(@PathParam("customerId") Long customerId)
+    {
+        MessageBody messageBody = MessageBody.getInstance();
+        messageBody.setBody(customerProfileService.findById(customerId));
+        messageBody.setKey("success");
+        messageBody.setStatus("200");
+
+        return new ResponseEntity<>(messageBody, HttpStatus.OK);
+    }
 
     @PostMapping("/customerProfile/register")
     public ResponseEntity<MessageBody> registerCustomer(@RequestBody CustomerProfile customerProfile) {
@@ -55,10 +55,22 @@ public class CustomerProfileController {
     @PostMapping("/customerProfile/login")
     public ResponseEntity<MessageBody> loginCustomer(@RequestBody Login login) {
 
+        CustomerProfile customerProfile = customerProfileService.login(login);
+
         MessageBody messageBody = MessageBody.getInstance();
-        messageBody.setBody(customerProfileService.login(login));
-        messageBody.setKey("success");
-        messageBody.setStatus("200");
+
+        if (customerProfile != null)
+        {
+            messageBody.setBody(customerProfile);
+            messageBody.setKey("success");
+            messageBody.setStatus("200");
+        }
+        else
+        {
+            messageBody.setBody("Wrong email or password");
+            messageBody.setKey("failed");
+            messageBody.setStatus("404");
+        }
 
         return new ResponseEntity<>(messageBody, HttpStatus.OK);
     }
