@@ -8,5 +8,9 @@ import org.springframework.stereotype.Repository;
 public interface CustomerProfileDao extends CrudRepository<CustomerProfile, Long> {
 
     CustomerProfile findByEmailAndPassword(String email, String password);
+    CustomerProfile findByFileNumber(String value);
+    CustomerProfile findByMobileNumber(String value);
+    CustomerProfile findByNationalNumber(String value);
+    CustomerProfile findByEmail(String value);
 
 }

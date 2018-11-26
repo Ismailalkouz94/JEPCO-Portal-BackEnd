@@ -28,6 +28,26 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     }
 
     @Override
+    public CustomerProfile findByFileNumber(String value) {
+        return customerProfileDao.findByFileNumber(value);
+    }
+
+    @Override
+    public CustomerProfile findByMobileNumber(String value) {
+        return customerProfileDao.findByMobileNumber(value);
+    }
+
+    @Override
+    public CustomerProfile findByNationalNumber(String value) {
+        return customerProfileDao.findByNationalNumber(value);
+    }
+
+    @Override
+    public CustomerProfile findByEmail(String value) {
+        return customerProfileDao.findByEmail(value);
+    }
+
+    @Override
     public CustomerProfile save(CustomerProfile customerProfile) {
         return customerProfileDao.save(customerProfile);
     }
