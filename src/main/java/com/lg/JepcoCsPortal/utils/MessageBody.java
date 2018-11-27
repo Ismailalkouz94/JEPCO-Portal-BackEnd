@@ -8,7 +8,7 @@ public class MessageBody {
 
     private static MessageBody messageBody = null;
 
-    private String status;
+    private int status;
 
     private String key;
 
@@ -18,11 +18,11 @@ public class MessageBody {
 
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

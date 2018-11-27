@@ -16,5 +16,6 @@ public interface CustomerProfileService {
     CustomerProfile findByEmail(String value);
     CustomerProfile save(CustomerProfile customerProfile);
     CustomerProfile login(Login login);
+    void delete(CustomerProfile customerProfile);
 
 }

@@ -23,12 +23,10 @@ import java.io.Serializable;
 
 })
 
-
 @Table(name = "WEB_CUST_PROFILE")
 public class CustomerProfile implements Serializable {
 
     @Id
-//    @Column(name = "CUST_MOB_NO" ,nullable = false ,unique = true ,length = 14)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long customerId;
 

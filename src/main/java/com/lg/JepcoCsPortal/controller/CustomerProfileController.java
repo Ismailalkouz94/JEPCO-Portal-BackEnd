@@ -5,8 +5,13 @@ import com.lg.JepcoCsPortal.entities.CustomerProfile;
 import com.lg.JepcoCsPortal.helpers.Login;
 import com.lg.JepcoCsPortal.services.CustomerProfileService;
 import com.lg.JepcoCsPortal.utils.MessageBody;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -23,23 +29,46 @@ public class CustomerProfileController {
     private CustomerProfileService customerProfileService;
 
     @GetMapping("/customerProfile/findAll")
-    public ResponseEntity<MessageBody> findAllCustomers()
-    {
+    public ResponseEntity<MessageBody> findAllCustomers() {
+
+        List<CustomerProfile> customerProfiles = customerProfileService.findAll();
         MessageBody messageBody = MessageBody.getInstance();
-        messageBody.setBody(customerProfileService.findAll());
-        messageBody.setKey("success");
-        messageBody.setStatus("200");
+
+        if (!customerProfiles.isEmpty()) {
+            messageBody.setBody(customerProfiles);
+            messageBody.setKey("success");
+            messageBody.setStatus(HttpStatus.OK.value());
+        } else {
+            messageBody.setBody("No customers found");
+            messageBody.setKey("failed");
+            messageBody.setStatus(HttpStatus.NOT_FOUND.value());
+        }
 
         return new ResponseEntity<>(messageBody, HttpStatus.OK);
     }
 
     @GetMapping("/customerProfile/find/{customerId}")
-    public ResponseEntity<MessageBody> findCustomerById(@PathParam("customerId") Long customerId)
-    {
+    public ResponseEntity<MessageBody> findCustomerById(@PathVariable("customerId") Long customerId) {
+
         MessageBody messageBody = MessageBody.getInstance();
-        messageBody.setBody(customerProfileService.findById(customerId));
-        messageBody.setKey("success");
-        messageBody.setStatus("200");
+
+        if (customerId == null) {
+            messageBody.setBody("customer id is null");
+            messageBody.setKey("failed");
+            messageBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        } else {
+            Optional<CustomerProfile> customerProfile = customerProfileService.findById(customerId);
+
+            if (customerProfile.isPresent()) {
+                messageBody.setBody(customerProfile);
+                messageBody.setKey("success");
+                messageBody.setStatus(HttpStatus.OK.value());
+            } else {
+                messageBody.setBody("No customers found");
+                messageBody.setKey("failed");
+                messageBody.setStatus(HttpStatus.NOT_FOUND.value());
+            }
+        }
 
         return new ResponseEntity<>(messageBody, HttpStatus.OK);
     }
@@ -59,42 +88,87 @@ public class CustomerProfileController {
         nationalExists = customerProfileService.findByNationalNumber(customerProfile.getNationalNumber()) != null;
         emailExists = customerProfileService.findByEmail(customerProfile.getEmail()) != null;
 
-        if (fileNumberExists || mobileNumberExists || nationalExists || emailExists)
-        {
+        if (fileNumberExists || mobileNumberExists || nationalExists || emailExists) {
             JSONArray resBody = new JSONArray();
 
             if (fileNumberExists)
-                resBody.add("fileNumberExists");
+                resBody.put("fileNumberExists");
 
             if (mobileNumberExists)
-                resBody.add("mobileNumberExists");
+                resBody.put("mobileNumberExists");
 
             if (nationalExists)
-                resBody.add("nationalExists");
+                resBody.put("nationalExists");
 
             if (emailExists)
-                resBody.add("emailExists");
+                resBody.put("emailExists");
 
-            messageBody.setBody(resBody.toJSONString());
+            messageBody.setBody(resBody.toString());
             messageBody.setKey("failed");
-            messageBody.setStatus("400");
-        }
-        else
-        {
+            messageBody.setStatus(HttpStatus.FOUND.value());
+        } else {
             CustomerProfile customerProfile1 = null;
 
             try {
                 customerProfile1 = customerProfileService.save(customerProfile);
 
-                messageBody.setBody(customerProfile1);
-                messageBody.setKey("success");
-                messageBody.setStatus("200");
-            }
-            catch (Exception e)
-            {
+                OkHttpClient client = new OkHttpClient();
+
+                MediaType mediaType = MediaType.parse("application/json");
+
+                JSONObject bodyObject = new JSONObject();
+                bodyObject.put("firstName", customerProfile.getFirstName());
+                bodyObject.put("lastName", customerProfile.getLastName());
+                bodyObject.put("email", customerProfile.getEmail());
+                bodyObject.put("nationalNumber", customerProfile.getNationalNumber());
+                bodyObject.put("fileNumber", customerProfile.getFileNumber());
+                bodyObject.put("mobileNumber", customerProfile.getMobileNumber());
+
+                com.squareup.okhttp.RequestBody body = com.squareup.okhttp.RequestBody.create(mediaType,
+                        bodyObject.toString());
+
+                Request request = new Request.Builder()
+                        .url("http://217.144.0.210:8085/JepcoMobApiProd/profile/create")
+                        .post(body)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+
+                String resBody = response.body().string();
+
+                System.out.println("----------------------------\n" + resBody + "\n-------------------------------");
+
+                if (response.code() != 200) {
+                    customerProfileService.delete(customerProfile1);
+
+                    JSONObject resObj = null;
+                    try {
+                        resObj = new JSONObject(resBody);
+                    } catch (Exception e) {
+
+                        messageBody.setBody("internal error");
+
+                    }
+
+                    if (resObj != null) {
+                        messageBody.setBody(resObj.get("key"));
+                    }
+                    messageBody.setKey("failed");
+                    messageBody.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                } else {
+                    messageBody.setBody(customerProfile1);
+                    messageBody.setKey("success");
+                    messageBody.setStatus(HttpStatus.OK.value());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                customerProfileService.delete(customerProfile1);
+
                 messageBody.setBody(e.getMessage());
                 messageBody.setKey("failed");
-                messageBody.setStatus("400");
+                messageBody.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         }
 
@@ -109,17 +183,14 @@ public class CustomerProfileController {
 
         MessageBody messageBody = MessageBody.getInstance();
 
-        if (customerProfile != null)
-        {
+        if (customerProfile != null) {
             messageBody.setBody(customerProfile);
             messageBody.setKey("success");
-            messageBody.setStatus("200");
-        }
-        else
-        {
+            messageBody.setStatus(HttpStatus.OK.value());
+        } else {
             messageBody.setBody("Wrong email or password");
             messageBody.setKey("failed");
-            messageBody.setStatus("404");
+            messageBody.setStatus(HttpStatus.NOT_FOUND.value());
         }
 
         return new ResponseEntity<>(messageBody, HttpStatus.OK);

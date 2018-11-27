@@ -57,4 +57,9 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
 
         return customerProfileDao.findByEmailAndPassword(login.getEmail(), login.getPassword());
     }
+
+    @Override
+    public void delete(CustomerProfile customerProfile) {
+        customerProfileDao.delete(customerProfile);
+    }
 }
