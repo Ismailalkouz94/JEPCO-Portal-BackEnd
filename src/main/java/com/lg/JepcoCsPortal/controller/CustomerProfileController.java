@@ -83,6 +83,24 @@ public class CustomerProfileController {
         boolean nationalExists;
         boolean emailExists;
 
+        String mobNum = customerProfile.getMobileNumber();
+
+        if (!mobNum.startsWith("+962")) {
+            if (mobNum.startsWith("962")) {
+                mobNum = "+" + mobNum;
+            } else {
+                if (mobNum.startsWith("0")) {
+                    mobNum = mobNum.replaceFirst("0", "+962");
+                } else {
+                    mobNum = "+962" + mobNum;
+                }
+            }
+
+        }
+
+        customerProfile.setMobileNumber(mobNum);
+        System.out.println(customerProfile.getMobileNumber());
+
         fileNumberExists = customerProfileService.findByFileNumber(customerProfile.getFileNumber()) != null;
         mobileNumberExists = customerProfileService.findByMobileNumber(customerProfile.getMobileNumber()) != null;
         nationalExists = customerProfileService.findByNationalNumber(customerProfile.getNationalNumber()) != null;
