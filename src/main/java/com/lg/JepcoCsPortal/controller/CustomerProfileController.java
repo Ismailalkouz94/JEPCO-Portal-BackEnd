@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.lg.JepcoCsPortal.entities.CustomerProfile;
 import com.lg.JepcoCsPortal.helpers.Login;
 import com.lg.JepcoCsPortal.services.CustomerProfileService;
+import com.lg.JepcoCsPortal.utils.GlobalProvider;
 import com.lg.JepcoCsPortal.utils.MessageBody;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -83,22 +84,21 @@ public class CustomerProfileController {
         boolean nationalExists;
         boolean emailExists;
 
-        String mobNum = customerProfile.getMobileNumber();
+//        String mobNum = customerProfile.getMobileNumber();
+//
+//        if (!mobNum.startsWith("+962")) {
+//            if (mobNum.startsWith("962")) {
+//                mobNum = "+" + mobNum;
+//            } else {
+//                if (mobNum.startsWith("0")) {
+//                    mobNum = mobNum.replaceFirst("0", "+962");
+//                } else {
+//                    mobNum = "+962" + mobNum;
+//                }
+//            }
+//        }
 
-        if (!mobNum.startsWith("+962")) {
-            if (mobNum.startsWith("962")) {
-                mobNum = "+" + mobNum;
-            } else {
-                if (mobNum.startsWith("0")) {
-                    mobNum = mobNum.replaceFirst("0", "+962");
-                } else {
-                    mobNum = "+962" + mobNum;
-                }
-            }
-
-        }
-
-        customerProfile.setMobileNumber(mobNum);
+        customerProfile.setMobileNumber(GlobalProvider.formatNumber(customerProfile.getMobileNumber()));
         System.out.println(customerProfile.getMobileNumber());
 
         fileNumberExists = customerProfileService.findByFileNumber(customerProfile.getFileNumber()) != null;
